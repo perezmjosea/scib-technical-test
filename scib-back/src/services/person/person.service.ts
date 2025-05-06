@@ -1,37 +1,44 @@
-import { Injectable, OnModuleInit } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { PersonDTO } from '../dto/person.dto';
 import * as fs from 'fs';
 import * as path from 'path';
 
 @Injectable()
-export class PersonService implements OnModuleInit {
-  private readonly _filePath = path.resolve(__dirname, '../db/persons.json');
+export class PersonService {
   private _persons: PersonDTO[] = [];
+  private _filePath = path.resolve(process.cwd(), 'data/person.json');
 
-  onModuleInit() {
-    this._readJSON();
+  constructor() {
+    this._loadFromFile();
   }
 
-  private _readJSON() {
-    if (!fs.existsSync(this._filePath)) {
-      fs.writeFileSync(this._filePath, '[]');
-    }
+  private _loadFromFile() {
     if (fs.existsSync(this._filePath)) {
-      try {
-        const content = fs.readFileSync(this._filePath, 'utf-8');
-        this._persons = JSON.parse(content || '[]') as PersonDTO[];
-      } catch (error) {
-        console.error('Error on JSON file:', error);
-        this._persons = [];
-      }
+      const data = fs.readFileSync(this._filePath, 'utf-8');
+      this._persons = JSON.parse(data) as PersonDTO[];
     }
   }
-  savePerson(person: PersonDTO) {
-    this._persons.push(person);
-    return person;
+
+  private _saveToFile() {
+    const directory = path.dirname(this._filePath);
+    if (!fs.existsSync(directory)) {
+      fs.mkdirSync(directory, { recursive: true });
+    }
+
+    fs.writeFileSync(
+      this._filePath,
+      JSON.stringify(this._persons, null, 2),
+      'utf-8',
+    );
   }
 
-  getAllPersons(): PersonDTO[] {
+  getAll(): PersonDTO[] {
     return this._persons;
+  }
+
+  addPerson(person: PersonDTO): PersonDTO {
+    this._persons.push(person);
+    this._saveToFile();
+    return person;
   }
 }

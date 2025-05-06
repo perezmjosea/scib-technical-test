@@ -1,18 +1,19 @@
-import { Controller, Get, Post } from '@nestjs/common';
+import { Controller, Get, Post, Body } from '@nestjs/common';
 import { PersonService } from '../../services/person/person.service';
 import { PersonDTO } from '../../services/dto/person.dto';
 
-@Controller('person')
+@Controller('persons')
 export class PersonController {
-  constructor(private readonly personService: PersonService) {}
-
-  @Post()
-  savePerson(person: PersonDTO): PersonDTO {
-    return this.personService.savePerson(person);
-  }
+  constructor(private readonly _personService: PersonService) {}
 
   @Get()
   getAllPersons(): PersonDTO[] {
-    return this.personService.getAllPersons();
+    return this._personService.getAll();
+  }
+
+  @Post()
+  createPerson(@Body() person: PersonDTO): PersonDTO {
+    console.log('POST /persons:', person);
+    return this._personService.addPerson(person);
   }
 }

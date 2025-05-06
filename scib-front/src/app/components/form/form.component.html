@@ -11,10 +11,11 @@
     <mat-error *ngIf="form.get('surname')?.hasError('required')">Surname is required</mat-error>
   </mat-form-field>
 
-  <input type="file" accept=".xlsx,.xls" (change)="onFileChange($event)" />
+  <input type="file" formControlName="file" accept=".xlsx,.xls" (change)="onFileChange($event)" />
   <p *ngIf="!file && fileTouched" class="error-text">Excel file is required</p>
 
   <button mat-raised-button color="primary" type="submit" [disabled]="form.invalid || !file">
-    <mat-icon>upload</mat-icon> Upload Person
+    <mat-spinner *ngIf="sendingData" diameter="20"></mat-spinner>
+    <mat-icon>upload</mat-icon> Save Person
   </button>
 </form>

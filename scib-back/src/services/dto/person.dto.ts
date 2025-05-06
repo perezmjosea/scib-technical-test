@@ -1,17 +1,10 @@
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-// src/candidate/dto/create-candidate.dto.ts
 import {
   IsBoolean,
-  IsEnum,
+  IsIn,
   IsNotEmpty,
   IsNumber,
   IsString,
 } from 'class-validator';
-
-export enum Seniority {
-  JUNIOR = 'junior',
-  SENIOR = 'senior',
-}
 
 export class PersonDTO {
   @IsString()
@@ -22,8 +15,8 @@ export class PersonDTO {
   @IsNotEmpty()
   surname: string;
 
-  @IsEnum(Seniority)
-  seniority: Seniority;
+  @IsIn(['junior', 'senior'])
+  seniority: 'junior' | 'senior';
 
   @IsNumber()
   yearsOfExperience: number;

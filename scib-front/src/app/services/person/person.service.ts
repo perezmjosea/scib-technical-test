@@ -1,26 +1,33 @@
+import { inject, Injectable, OnInit, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { inject, Injectable, signal } from '@angular/core';
+import { Observable } from 'rxjs';
 import { Person } from '../../interfaces/person';
 
 @Injectable({
   providedIn: 'root'
 })
-export class PersonService {
-
-  constructor() { }
+export class PersonService implements OnInit {
 
   private _httpClient = inject(HttpClient);
+  private _apiUrl = 'http://localhost:3000/persons';
   persons = signal<Person[]>([]);
 
-  postNewPerson(formData: {name: string, surname: string}, file: File) {
-    const data = new FormData();
-    data.append('name', formData.name);
-    data.append('surname', formData.surname);
-    data.append('file', file);
+  ngOnInit(): void {
+    this.loadPersons()
+  }
 
-    this._httpClient.post<Person>('http://localhost:3000/candidates/upload', data)
-      .subscribe(person => {
-        this.persons.update(pers => [...pers, person]);
-      })
+  loadPersons(): void {
+    this.getAllPersons().subscribe({
+      next: (data) => this.persons.set(data),
+      error: (err) => console.error('Error loading persons:', err)
+    });
+  }
+  
+  getAllPersons(): Observable<Person[]> {
+    return this._httpClient.get<Person[]>(this._apiUrl);
+  }
+  
+  postNewPerson(person: Person): Observable<Person> {
+    return this._httpClient.post<Person>(this._apiUrl, person);
   }
 }
