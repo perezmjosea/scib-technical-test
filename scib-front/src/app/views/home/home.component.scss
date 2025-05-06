@@ -1,0 +1,22 @@
+.main-content {
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  width: 1200px;
+  max-width: 90%;
+  margin: auto;
+}
+.mat-grid-list {
+  ::ng-deep {
+    > div {
+      display: flex;
+      flex-direction: row;
+    }
+    .mat-grid-tile,
+    .mat-grid-tile-content {
+      position: relative;
+      left: 0 !important;
+    }
+  }
+}
