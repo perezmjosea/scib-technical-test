@@ -1,21 +1,21 @@
 <form [formGroup]="form" (ngSubmit)="onFormSubmit()" class="form-container" enctype="multipart/form-data">
   <mat-form-field appearance="fill">
-    <mat-label>Name</mat-label>
+    <mat-label>Nombre</mat-label>
     <input matInput formControlName="name" required />
-    <mat-error *ngIf="form.get('name')?.hasError('required')">Name is required</mat-error>
+    <mat-error *ngIf="form.get('name')?.hasError('required')">Nombre requerido</mat-error>
   </mat-form-field>
 
   <mat-form-field appearance="fill">
-    <mat-label>Surname</mat-label>
+    <mat-label>Apellido</mat-label>
     <input matInput formControlName="surname" required />
-    <mat-error *ngIf="form.get('surname')?.hasError('required')">Surname is required</mat-error>
+    <mat-error *ngIf="form.get('surname')?.hasError('required')">Apellido requerido</mat-error>
   </mat-form-field>
 
   <input type="file" formControlName="file" accept=".xlsx,.xls" (change)="onFileChange($event)" />
-  <p *ngIf="!file && fileTouched" class="error-text">Excel file is required</p>
+  <p *ngIf="!file && fileTouched" class="error-text">Archivo Excell requerido</p>
 
   <button mat-raised-button color="primary" type="submit" [disabled]="form.invalid || !file">
     <mat-spinner *ngIf="sendingData" diameter="20"></mat-spinner>
-    <mat-icon>upload</mat-icon> Save Person
+    <mat-icon>upload</mat-icon>Enviar
   </button>
 </form>

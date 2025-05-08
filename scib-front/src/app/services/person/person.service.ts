@@ -1,33 +1,39 @@
-import { inject, Injectable, OnInit, signal } from '@angular/core';
+import { inject, Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
 import { Person } from '../../interfaces/person';
 
 @Injectable({
   providedIn: 'root'
 })
-export class PersonService implements OnInit {
+export class PersonService {
 
   private _httpClient = inject(HttpClient);
-  private _apiUrl = 'http://localhost:3000/persons';
   persons = signal<Person[]>([]);
 
-  ngOnInit(): void {
-    this.loadPersons()
+  constructor() {
+    this.loadPersons();
   }
 
   loadPersons(): void {
-    this.getAllPersons().subscribe({
-      next: (data) => this.persons.set(data),
-      error: (err) => console.error('Error loading persons:', err)
-    });
+    const localData = localStorage.getItem('persons');
+    if (localData) {
+      this.persons.set(JSON.parse(localData));
+    } else {
+      this._httpClient.get<Person[]>('assets/data/persons.json').subscribe({
+        next: (data) => {
+          this.persons.set(data);
+          console.log('Data loaded from person.json:', data);
+          localStorage.setItem('persons', JSON.stringify(data));
+        },
+        error: (err) => console.error('Error al leer el archivo person.json:', err)
+      });
+    }
   }
-  
-  getAllPersons(): Observable<Person[]> {
-    return this._httpClient.get<Person[]>(this._apiUrl);
-  }
-  
-  postNewPerson(person: Person): Observable<Person> {
-    return this._httpClient.post<Person>(this._apiUrl, person);
+
+  addNewPerson(newPerson: Person): void {
+    const current = this.persons();
+    const updated = [...current, newPerson];
+    this.persons.set(updated);
+    localStorage.setItem('persons', JSON.stringify(updated));
   }
 }
