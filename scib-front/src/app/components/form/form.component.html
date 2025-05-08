@@ -12,10 +12,14 @@
   </mat-form-field>
 
   <input type="file" formControlName="file" accept=".xlsx,.xls" (change)="onFileChange($event)" />
-  <p *ngIf="!file && fileTouched" class="error-text">Archivo Excell requerido</p>
+  <p *ngIf="!file && form.get('file')?.touched" class="error-text">Archivo Excell requerido</p>
 
   <button mat-raised-button color="primary" type="submit" [disabled]="form.invalid || !file">
-    <mat-spinner *ngIf="sendingData" diameter="20"></mat-spinner>
+    <mat-spinner *ngIf="sendingData" diameter="10"></mat-spinner>
     <mat-icon>upload</mat-icon>Enviar
+  </button>
+
+  <button mat-raised-button color="warn" (click)="deletePersons()" style="margin-bottom: 1rem;">
+    Eliminar registros
   </button>
 </form>

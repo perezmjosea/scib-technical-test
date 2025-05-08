@@ -1,13 +1,10 @@
-import { inject, Injectable, signal } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { Injectable, signal } from '@angular/core';
 import { Person } from '../../interfaces/person';
 
 @Injectable({
   providedIn: 'root'
 })
 export class PersonService {
-
-  private _httpClient = inject(HttpClient);
   persons = signal<Person[]>([]);
 
   constructor() {
@@ -15,25 +12,18 @@ export class PersonService {
   }
 
   loadPersons(): void {
-    const localData = localStorage.getItem('persons');
-    if (localData) {
-      this.persons.set(JSON.parse(localData));
-    } else {
-      this._httpClient.get<Person[]>('assets/data/persons.json').subscribe({
-        next: (data) => {
-          this.persons.set(data);
-          console.log('Data loaded from person.json:', data);
-          localStorage.setItem('persons', JSON.stringify(data));
-        },
-        error: (err) => console.error('Error al leer el archivo person.json:', err)
-      });
-    }
+    const data = localStorage.getItem('persons');
+    this.persons.set(data ? JSON.parse(data) : []);
   }
 
   addNewPerson(newPerson: Person): void {
-    const current = this.persons();
-    const updated = [...current, newPerson];
-    this.persons.set(updated);
-    localStorage.setItem('persons', JSON.stringify(updated));
+    const newData = [...this.persons(), newPerson];
+    this.persons.set(newData);
+    localStorage.setItem('persons', JSON.stringify(newData));
+  }
+
+  clearPersons(): void {
+    localStorage.removeItem('persons');
+    this.persons.set([]);
   }
 }

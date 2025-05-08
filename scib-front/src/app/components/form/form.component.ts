@@ -1,7 +1,5 @@
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { PersonService } from '../../services/person/person.service';
-import { Person } from '../../interfaces/person';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -10,7 +8,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBarModule, MatSnackBar } from '@angular/material/snack-bar';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { HttpClient } from '@angular/common/http';
-import * as XLSX from 'xlsx';
+import { PersonService } from '../../services/person/person.service';
+import { Person } from '../../interfaces/person';
 
 @Component({
   selector: 'app-form',
@@ -20,14 +19,12 @@ import * as XLSX from 'xlsx';
   styleUrl: './form.component.scss'
 })
 export class FormComponent {
-  private _personService = inject(PersonService);
   private _formBuilder = inject(FormBuilder);
-  private _snackBar = inject(MatSnackBar);
   private _httpClient = inject(HttpClient);
+  private _snackBar = inject(MatSnackBar);
+  private _personService = inject(PersonService);
 
   file: File | null = null;
-  fileTouched = false;
-  fileData: (string | number | boolean)[] = [];
   sendingData = false;
 
   form = this._formBuilder.group({
@@ -36,59 +33,15 @@ export class FormComponent {
     file: [null, Validators.required]
   });
 
-  private _isValidFileData(data: unknown): data is [string, number, boolean] {
-    if (!Array.isArray(data) || data.length !== 3) {
-      return false;
-    }
-    const [seniority, years, availability] = data;
-    const validSeniority = seniority === 'Junior' || seniority === 'Senior';
-    const validYears = typeof years === 'number' && !isNaN(years);
-    const validAvailability = typeof availability === 'boolean' || availability === 'Yes' || availability === 'No';
-
-    return validSeniority && validYears && validAvailability;
-  }
-
   onFileChange(event: Event) {
     const input = event.target as HTMLInputElement;
-    const selectedFile = input.files?.[0];
-    this.fileTouched = true;
-
-    if (!selectedFile) {
-      this.file = null;
-      return;
-    }
-
-    const fileReader = new FileReader();
-    this.file = selectedFile;
-
-    fileReader.onload = (e) => {
-      const data = new Uint8Array(e.target?.result as ArrayBuffer);
-      const book = XLSX.read(data, { type: 'array' });
-      const sheetName = book.SheetNames[0];
-      const sheet = book.Sheets[sheetName];
-      const rawData = XLSX.utils.sheet_to_json(sheet, { header: 1 })[1];
-      console.log(rawData);
-
-      if (!this._isValidFileData(rawData)) {
-        this.fileData = [];
-        this._snackBar.open(
-          'Archivo inválido. Debe contener: seniority ("junior" o "senior"), años (número) y disponibilidad (booleano).',
-          'Cerrar',
-          { duration: 5000 }
-        );
-        return;
-      }
-      this.fileData = rawData;
-    };
-
-    fileReader.readAsArrayBuffer(selectedFile);
+    this.file = input.files?.[0] || null;
   }
 
   onFormSubmit() {
     this.form.markAllAsTouched();
-    this.fileTouched = true;
 
-    if (!this.file || this.form.invalid || this.fileData.length !== 3) {
+    if (!this.file || this.form.invalid) {
       return;
     }
 
@@ -96,26 +49,36 @@ export class FormComponent {
     this.form.disable();
 
     const formData = new FormData();
-    formData.append('name', this.form.value.name as string);
-    formData.append('surname', this.form.value.surname as string);
+    formData.append('name', this.form.value.name!);
+    formData.append('surname', this.form.value.surname!);
     formData.append('file', this.file);
 
     this._httpClient.post<Person>('http://localhost:3000/process-excel', formData)
       .subscribe({
         next: (response) => {
           this._personService.addNewPerson(response);
-          this._snackBar.open('El proceso se realizó corectamente', 'Cerrar', { duration: 5000 });
-          this.form.reset();
-          this.file = null;
-          this.fileTouched = false;
-          this.sendingData = false;
-          this.form.enable();
+          this._snackBar.open('Los datos se guardaron correctamente', 'Cerrar', { duration: 5000 });
+          this.resetForm();
         },
         error: (err) => {
-          this._snackBar.open(`Error al procesar los datos: ${err}`, 'Cerrar', { duration: 5000 });
-          this.sendingData = false;
-          this.form.enable();
+          this._snackBar.open(`Error al procesar los datos: ${err.message}`, 'Cerrar', { duration: 5000 });
+        },
+        complete: () => {
+          this.resetForm();
         }
       });
+  }
+
+  deletePersons() {
+    this._personService.clearPersons();
+    this._snackBar.open('Los datos se eliminaron correctamente', 'Cerrar', { duration: 5000 });
+    this.resetForm();
+  }
+
+  resetForm() {
+    this.form.reset();
+    this.file = null;
+    this.sendingData = false;
+    this.form.enable();
   }
 }
