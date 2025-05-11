@@ -9,7 +9,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 @Component({
   selector: 'app-table',
   standalone: true,
-  imports: [CommonModule, MatTableModule, MatCardModule, MatProgressSpinnerModule ],
+  imports: [CommonModule, MatTableModule, MatCardModule, MatProgressSpinnerModule],
   templateUrl: './table.component.html',
   styleUrl: './table.component.scss'
 })
@@ -20,15 +20,9 @@ export class TableComponent implements OnInit {
   displayedColumns: (keyof Person)[] = ['name', 'surname', 'seniority', 'yearsOfExperience', 'availability'];
 
   ngOnInit(): void {
-    this._personService.getAllPersons().subscribe({
-      next: (data) => {
-        this._personService.persons.set(data);
-        this.loading.set(false);
-      },
-      error: () => {
-        console.error('Error al obtener las personas');
-        this.loading.set(false);
-      }
+    this._personService.getAllPersons().subscribe((data) => {
+      this._personService.persons.set(data);
+      setTimeout(() => { this.loading.set(false); }, 1000);
     });
   }
 }

@@ -2,20 +2,31 @@
   <mat-form-field appearance="fill">
     <mat-label>Name</mat-label>
     <input matInput formControlName="name" required />
-    <mat-error *ngIf="form.get('name')?.hasError('required')">Name is required</mat-error>
+    @if (form.get('name')?.hasError('required')) {
+    <mat-error>Name is required</mat-error>
+    }
   </mat-form-field>
 
   <mat-form-field appearance="fill">
     <mat-label>Surname</mat-label>
     <input matInput formControlName="surname" required />
-    <mat-error *ngIf="form.get('surname')?.hasError('required')">Surname is required</mat-error>
+    @if (form.get('surname')?.hasError('required')) {
+    <mat-error>Surname is required</mat-error>
+    }
   </mat-form-field>
 
-  <input type="file" formControlName="file" accept=".xlsx,.xls" (change)="onFileChange($event)" />
-  <p *ngIf="!file && fileTouched" class="error-text">Excel file is required</p>
+  <input type="file" formControlName="file" accept=".xlsx,.xls" required (change)="onFileChange($event)" />
+  @if (!file && fileTouched) {
+  <mat-error>Excel file is required</mat-error>
+  }
 
   <button mat-raised-button color="primary" type="submit" [disabled]="form.invalid || !file">
-    <mat-spinner *ngIf="sendingData" diameter="20"></mat-spinner>
-    <mat-icon>upload</mat-icon> Save Person
+    @if (sendingData) {
+    <mat-spinner diameter="20"></mat-spinner>
+    } @else {
+    <ng-container>
+      <mat-icon>upload</mat-icon>Save
+    </ng-container>
+    }
   </button>
 </form>

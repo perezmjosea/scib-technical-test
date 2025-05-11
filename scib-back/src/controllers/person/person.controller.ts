@@ -1,10 +1,11 @@
-import { Controller, Get, Post, Body } from '@nestjs/common';
+import { Controller, Post, Get, Body, UploadedFile, UseInterceptors } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
 import { PersonService } from '../../services/person/person.service';
 import { PersonDTO } from '../../services/dto/person.dto';
 
 @Controller('persons')
 export class PersonController {
-  constructor(private readonly _personService: PersonService) {}
+  constructor(private readonly _personService: PersonService) { }
 
   @Get()
   getAllPersons(): PersonDTO[] {
@@ -12,8 +13,8 @@ export class PersonController {
   }
 
   @Post()
-  createPerson(@Body() person: PersonDTO): PersonDTO {
-    console.log('POST /persons:', person);
-    return this._personService.addPerson(person);
+  @UseInterceptors(FileInterceptor('file'))
+  createPerson(@UploadedFile() file: Express.Multer.File, @Body() body: { name: string; surname: string },): PersonDTO {
+    return this._personService.proccessData(body, file);
   }
 }
