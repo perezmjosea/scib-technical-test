@@ -2,7 +2,7 @@
   <mat-form-field appearance="fill">
     <mat-label>Name</mat-label>
     <input matInput formControlName="name" required />
-    @if (form.get('name')?.hasError('required')) {
+    @if (form.get('name')?.hasError('required') && form.get('name')?.touched) {
     <mat-error>Name is required</mat-error>
     }
   </mat-form-field>
@@ -10,22 +10,38 @@
   <mat-form-field appearance="fill">
     <mat-label>Surname</mat-label>
     <input matInput formControlName="surname" required />
-    @if (form.get('surname')?.hasError('required')) {
+    @if (form.get('surname')?.hasError('required') && form.get('surname')?.touched) {
     <mat-error>Surname is required</mat-error>
     }
   </mat-form-field>
 
-  <input type="file" formControlName="file" accept=".xlsx,.xls" required (change)="onFileChange($event)" />
-  @if (!file && fileTouched) {
-  <mat-error>Excel file is required</mat-error>
-  }
+  <div class="file-input-group">
+    <input id="file" type="file" accept=".xlsx,.xls" (change)="onFileChange($event)" formControlName="file" required />
+    <div class="file-input-wrapper" [class.invalid]="!file && fileTouched && invalidFile">
+      <label for="file">Excel File*</label>
+
+      <div class="fake-file-input">
+        <mat-icon>upload_file</mat-icon>
+        <span *ngIf="file">{{file.name}}</span>
+        <span *ngIf="!file">No file selected</span>
+      </div>
+    </div>
+    @if (form.get('file')?.hasError('required') && form.get('file')?.touched) {
+    <div class="mat-mdc-form-field-subscript-wrapper mat-mdc-form-field-bottom-align">
+      <div aria-atomic="true" aria-live="polite" class="mat-mdc-form-field-error-wrapper">
+        <mat-error class="mat-mdc-form-field-error mat-mdc-form-field-bottom-align" id="mat-mdc-error-3">
+          Excel file is required</mat-error>
+      </div>
+    </div>
+    }
+  </div>
 
   <button mat-raised-button color="primary" type="submit" [disabled]="form.invalid || !file">
     @if (sendingData) {
     <mat-spinner diameter="20"></mat-spinner>
     } @else {
     <ng-container>
-      <mat-icon>upload</mat-icon>Save
+      Save
     </ng-container>
     }
   </button>

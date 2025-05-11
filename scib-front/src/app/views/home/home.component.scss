@@ -7,12 +7,18 @@
   max-width: 90%;
   margin: auto;
 }
+
 .mat-grid-list {
   ::ng-deep {
-    > div {
+    >div {
       display: flex;
       flex-direction: row;
     }
+
+    .mat-grid-tile {
+      padding: 0 1.2rem;
+    }
+
     .mat-grid-tile,
     .mat-grid-tile-content {
       align-items: flex-start;
