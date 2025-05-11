@@ -74,8 +74,6 @@ input[type='file'] {
   }
 }
 
-input [type='file'] {}
-
 .fake-file-input {
   display: flex;
   align-items: center;
@@ -86,8 +84,4 @@ input [type='file'] {}
     margin-left: 8px;
     color: var(--mdc-filled-text-field-label-text-color, var(--mat-sys-on-surface-variant));
   }
-
-  // &:hover {
-  //   background-color: var(--mdc-filled-text-field-container-color, var(--mat-sys-surface-variant));
-  // }
 }

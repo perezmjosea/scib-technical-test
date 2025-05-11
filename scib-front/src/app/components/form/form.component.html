@@ -19,7 +19,6 @@
     <input id="file" type="file" accept=".xlsx,.xls" (change)="onFileChange($event)" formControlName="file" required />
     <div class="file-input-wrapper" [class.invalid]="!file && fileTouched && invalidFile">
       <label for="file">Excel File*</label>
-
       <div class="fake-file-input">
         <mat-icon>upload_file</mat-icon>
         <span *ngIf="file">{{file.name}}</span>

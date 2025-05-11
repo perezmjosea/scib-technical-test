@@ -2,12 +2,22 @@
   width: 100%;
 }
 
+.loading-spinner {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  margin-bottom: 4rem;
+}
+
 mat-card {
   padding: 1rem;
 }
+
 table {
   width: 100%;
 }
+
 h2 {
   margin-bottom: 1rem;
 }

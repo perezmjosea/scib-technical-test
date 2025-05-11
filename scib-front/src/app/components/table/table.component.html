@@ -4,12 +4,12 @@
   </mat-card-header>
   <mat-card-content>
     @if (loading()) {
-    <div style="text-align: center; padding: 2rem;">
+    <div class="loading-spinner">
       <mat-spinner></mat-spinner>
     </div>
     } @else {
     @if (persons().length > 0) {
-    <table mat-table [dataSource]="persons()" class="mat-elevation-z2" multiTemplateDataRows>
+    <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z2">
       <ng-container matColumnDef="name">
         <th mat-header-cell *matHeaderCellDef>Name</th>
         <td mat-cell *matCellDef="let person">{{ person.name | titlecase }}</td>
@@ -38,5 +38,7 @@
     <h2>No results</h2>
     }
     }
+    <mat-paginator [length]="dataSource.data.length" [pageSize]="10" [pageSizeOptions]="[5, 10, 25]"
+      aria-label="Select page"></mat-paginator>
   </mat-card-content>
 </mat-card>
