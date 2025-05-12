@@ -6,7 +6,6 @@ import * as XLSX from 'xlsx';
 @Injectable()
 export class PersonService {
   private _persons: PersonDTO[] = [];
-  private _filePath = path.resolve(process.cwd(), 'data/person.json');
 
   getAll(): PersonDTO[] {
     return this._persons;
