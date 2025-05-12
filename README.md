@@ -8,6 +8,11 @@ El backend de este proyecto está desarrollado en **NestJS**. Para arrancar el b
 
 1. Asegúrate de tener [Node.js](https://nodejs.org/) instalado en tu máquina.
 2. Entra en el directorio del backend.
+
+    ```bash
+    cd scib-back
+    ```
+
 3. Instala las dependencias:
 
     ```bash
@@ -22,7 +27,7 @@ El backend de este proyecto está desarrollado en **NestJS**. Para arrancar el b
 
 5. El servidor estará corriendo en `http://localhost:3000/`.
 
-### Archivo `data-file.xls`
+### Archivo `data-file.xls` en el front
 
 El backend requiere que se suba un archivo Excel, denominado `data-file.xls`, como parte del formulario. Este archivo debe contener tres columnas: 
 - **Seniority**: Un valor que puede ser `"junior"` o `"senior"`.
@@ -37,6 +42,11 @@ Para iniciar el servidor de desarrollo del frontend, sigue estos pasos:
 
 1. Asegúrate de tener [Node.js](https://nodejs.org/) y [Angular CLI](https://angular.io/cli) instalados en tu máquina.
 2. Entra en el directorio del frontend.
+
+    ```bash
+    cd scib-front
+    ```
+
 3. Instala las dependencias:
 
     ```bash
@@ -46,7 +56,7 @@ Para iniciar el servidor de desarrollo del frontend, sigue estos pasos:
 4. Ejecuta el servidor de desarrollo:
 
     ```bash
-    ng serve
+    ng serve o npm run start
     ```
 
 5. El servidor estará corriendo en `http://localhost:4200/`.
