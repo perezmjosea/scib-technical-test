@@ -1,10 +1,10 @@
 <main class="main-content">
   <mat-grid-list cols="12">
     <mat-grid-tile [colspan]="4">
-      <app-form></app-form>
+      <app-form (newPersonAdded)="tableComponent.updateTableWithNewPerson($event)"></app-form>
     </mat-grid-tile>
     <mat-grid-tile [colspan]="8">
-      <app-table></app-table>
+      <app-table #tableComponent></app-table>
     </mat-grid-tile>
   </mat-grid-list>
 </main>

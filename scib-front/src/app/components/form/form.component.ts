@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, Output, EventEmitter, output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { PersonService } from '../../services/person/person.service';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
@@ -9,6 +9,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBarModule, MatSnackBar } from '@angular/material/snack-bar';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import * as XLSX from 'xlsx';
+import { Person } from '../../interfaces/person';
 
 @Component({
   selector: 'app-form',
@@ -18,6 +19,8 @@ import * as XLSX from 'xlsx';
   styleUrl: './form.component.scss'
 })
 export class FormComponent {
+  readonly newPersonAdded = output<Person>();
+
   private _personService = inject(PersonService);
   private _formBuilder = inject(FormBuilder);
   private _snackBar = inject(MatSnackBar);
@@ -101,6 +104,9 @@ export class FormComponent {
         this._personService.saveNewPerson(person);
         this._snackBar.open('Persona guardada correctamente', 'Cerrar', { duration: 5000 });
         this.resetForm();
+
+        // Emitir el nuevo registro para actualizar la tabla
+        this.newPersonAdded.emit(person);
       },
       error: () => {
         this._snackBar.open('Error al guardar persona', 'Cerrar', { duration: 5000 });

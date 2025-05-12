@@ -33,7 +33,14 @@ export class TableComponent implements OnInit, AfterViewInit {
       this.loading.set(false);
     }, 1000);
   }
+
   ngAfterViewInit(): void {
     this.dataSource.paginator = this.paginator;
+  }
+
+  updateTableWithNewPerson(newPerson: Person): void {
+    const updatedData = [...this.dataSource.data, newPerson];
+    this.dataSource.data = updatedData;
+    this.paginator.lastPage();
   }
 }
