@@ -1,4 +1,4 @@
-# ScibFront
+# Scib Technical Test
 
 Este proyecto fue generado utilizando [Angular CLI](https://github.com/angular/angular-cli) versión 19.2.10.
 
